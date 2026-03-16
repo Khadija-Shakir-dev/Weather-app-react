@@ -1,0 +1,343 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 40%, #c4b5fd 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-image: url('./neda-astani-KWTkd7mHqKE-unsplash.jpg');
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+}
+
+/* ─── Card Container ─────────────────────────────────── */
+.container {
+  /* background: #ffffff; */
+  backdrop-filter: blur(11px) saturate(140%);
+  border-radius: 20px;
+  padding: 36px 32px;
+  width: 100%;
+  max-width: 520px;
+  box-shadow: 0 4px 24px rgba(109, 40, 217, 0.10);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+/* ─── Search Row ─────────────────────────────────────── */
+.container input {
+  width: 100%;
+  padding: 12px 18px;
+  border: 1.5px solid #ede9fe;
+  border-radius: 12px 0 0 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  color: #3b0764;
+  background: #faf8ff;
+  outline: none;
+  transition: border-color 0.2s;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.container input::placeholder {
+  color: #bcbbbe;
+  font-weight: 500;
+}
+
+.container input:focus {
+  border-color: #7c3aed;
+  background: #fff;
+}
+
+/* Search button sits flush with input */
+.container > input,
+.container > .city {
+  display: inline-block;
+}
+
+.container {
+  /* override flex for the top row */
+}
+
+/* Wrap input + button using a flex row approach */
+.container > input {
+  border-right: none;
+  border-radius: 12px 0 0 12px;
+  flex: 1;
+}
+
+.city {
+  padding: 12px 18px;
+  background: #7c3aed;
+  color: #fff;
+  border: none;
+  border-radius: 0 12px 12px 0;
+  cursor: pointer;
+  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.1s;
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+.city:hover {
+  background: #6d28d9;
+}
+
+.city:active {
+  transform: scale(0.97);
+}
+
+/* Make input + button sit side by side */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.container > input,
+.container > .city {
+  /* reset for row pairing */
+}
+
+/* Re-do: wrap them in a row using adjacent sibling trick */
+.container > input {
+  margin-bottom: 0;
+  border-radius: 12px 0 0 12px;
+  border-right: none;
+  order: 0;
+}
+
+.container > .city {
+  border-radius: 0 12px 12px 0;
+  order: 1;
+  margin-bottom: 20px;
+}
+
+/* Use a grid to force input+button onto same row */
+.container {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto;
+  row-gap: 0;
+  column-gap: 0;
+  align-items: stretch;
+  padding: 36px 32px;
+}
+
+.container > input {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.container > .city {
+  grid-column: 2;
+  grid-row: 1;
+  margin-bottom: 0;
+}
+
+.error-msg {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin-top: 14px;
+}
+
+.content {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  margin-top: 24px;
+  width: 100%;
+}
+
+/* ─── Error Message ──────────────────────────────────── */
+.error-msg {
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: center;
+  width: 100%;
+}
+
+/* ─── Weather Content ────────────────────────────────── */
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  animation: fadeUp 0.4s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Weather Image + Description ───────────────────── */
+.weather-img {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.weather-img img {
+  width: 88px;
+  height: 88px;
+  filter: drop-shadow(0 2px 8px rgba(124, 58, 237, 0.18));
+}
+
+.description {
+  font-size: 0.88rem;
+  color: #7c3aed;
+  font-weight: 500;
+  text-transform: capitalize;
+  letter-spacing: 0.03em;
+  background: #f5f3ff;
+  padding: 4px 14px;
+  border-radius: 20px;
+}
+
+/* ─── Temperature ────────────────────────────────────── */
+.weather-temp{
+  padding: 6px;
+}
+.weather-temp h3 {
+  font-size: 4rem;
+  font-weight: 600;
+  color: #101010;
+  letter-spacing: -2px;
+  line-height: 1;
+}
+
+.weather-temp h3 span {
+  font-size: 2rem;
+  font-weight: 400;
+  color: #7c3aed;
+  letter-spacing: 0;
+}
+
+/* ─── City + Location ────────────────────────────────── */
+.weather-city {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #d6c9e8;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.weather-location {
+  color: #8351d9;
+  box-shadow: ;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+}
+
+/* ─── Stats Row ──────────────────────────────────────── */
+.weather-stats {
+  display: flex;
+  gap: 16px;
+  margin-top: 20px;
+  width: 100%;
+  justify-content: center;
+  padding: 10px;
+
+}
+
+.wind,
+.humidity {
+  flex: 1;
+  max-width: 160px;
+  background: #faf8ff;
+  border: 1.5px solid #ede9fe;
+  border-radius: 14px;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ─── Wind ───────────────────────────────────────────── */
+.weather-wind {
+  font-size: 1.4rem;
+  color: #7c3aed;
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.wind-speed {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e1b4b;
+}
+
+.wind-head {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #a78bfa;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ─── Humidity ───────────────────────────────────────── */
+.weathhumidity {
+  font-size: 1.6rem;
+  color: #7c3aed;
+  display: flex;
+  align-items: center;
+  margin-bottom: 2px;
+}
+
+.humidity-speed {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e1b4b;
+}
+
+.humidity-head {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #a78bfa;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ─── Responsive ─────────────────────────────────────── */
+@media (max-width: 480px) {
+  .container {
+    padding: 28px 20px;
+    border-radius: 16px;
+  }
+
+  .weather-temp h3 {
+    font-size: 3.2rem;
+  }
+
+  .wind,
+  .humidity {
+    padding: 14px 10px;
+  }
+}
