@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./weather.css";
 import { IoMdSearch } from "react-icons/io";
 import { FaLocationDot } from "react-icons/fa6";
