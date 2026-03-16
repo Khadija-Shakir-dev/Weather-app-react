@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import "./weather.css";
 import { IoMdSearch } from "react-icons/io";
 import { FaLocationDot } from "react-icons/fa6";
@@ -9,6 +9,29 @@ const Weather = () => {
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState(null);
   const [error, setError] = useState("");
+    const [suggestions, setSuggestions] = useState([]);
+
+
+    // suggestion
+  
+    useEffect(() => {
+    if (city.length > 2) {
+        const apiKey = "df15ecb408ec75e68cf4bb7463f0fcd9";
+
+      fetch(
+        `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${apiKey}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          setSuggestions(data);
+        })
+        .catch((err) => {
+          console.error("Error fetching city suggestions", err);
+        });
+    } else {
+      setSuggestions([]); 
+    }
+  }, [city]);
 
   
     
@@ -19,8 +42,9 @@ const Weather = () => {
   }
 
   async function fetchdata() {
-    // url aur fetch dono try ke andar — sahi jagah
-    try {
+  setSuggestions([]); 
+  try {
+
   const apiKey = "df15ecb408ec75e68cf4bb7463f0fcd9";
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
 
@@ -49,10 +73,32 @@ const Weather = () => {
         value={city}
         onChange={cityChange}
       />
+      {/* Suggestions list */}
+      {suggestions.length > 0 && (
+        <ul className="suggestions-list">
+          {suggestions.map((suggestion, index) => (
+            <li key={index} onClick={() => setCity(suggestion.name)}>
+              {suggestion.name}, {suggestion.country}
+            </li>
+          ))}
+        </ul>
+      )}
+
 
       <button className="city" onClick={fetchdata}>
         <IoMdSearch />
       </button>
+
+{suggestions.length > 0 && (
+      <ul className="suggestions-list">
+        {suggestions.map((suggestion, index) => (
+          <li key={index} onClick={() => { setCity(suggestion.name); setSuggestions([]); }}>
+            <span className="sug-name">{suggestion.name}</span>
+            <span className="sug-country">{suggestion.country}</span>
+          </li>
+        ))}
+      </ul>
+    )}
 
       {error && <p className="error-msg">{error}</p>}
 
