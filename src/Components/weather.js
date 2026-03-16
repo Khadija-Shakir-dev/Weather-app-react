@@ -23,8 +23,8 @@ const Weather = () => {
       )
         .then((response) => response.json())
         .then((data) => {
-          setSuggestions(data);
-        })
+const citiesOnly = data.filter(item => item.name && item.country);
+        setSuggestions(citiesOnly);        })
         .catch((err) => {
           console.error("Error fetching city suggestions", err);
         });
@@ -41,6 +41,10 @@ const Weather = () => {
     setCity(event.target.value);
   }
 
+  function handleSuggestionClick(name) {
+  setCity(name);
+  setSuggestions([]);
+}
   async function fetchdata() {
   setSuggestions([]); 
   try {
@@ -77,8 +81,9 @@ const Weather = () => {
       {suggestions.length > 0 && (
         <ul className="suggestions-list">
           {suggestions.map((suggestion, index) => (
-            <li key={index} onClick={() => setCity(suggestion.name)}>
-              {suggestion.name}, {suggestion.country}
+            <li key={index} onClick={() => handleSuggestionClick(suggestion.name)}>
+              <span className="sug-name">{suggestion.name}</span>
+              <span className="sug-country">{suggestion.country}</span>
             </li>
           ))}
         </ul>
@@ -89,16 +94,6 @@ const Weather = () => {
         <IoMdSearch />
       </button>
 
-{suggestions.length > 0 && (
-      <ul className="suggestions-list">
-        {suggestions.map((suggestion, index) => (
-          <li key={index} onClick={() => { setCity(suggestion.name); setSuggestions([]); }}>
-            <span className="sug-name">{suggestion.name}</span>
-            <span className="sug-country">{suggestion.country}</span>
-          </li>
-        ))}
-      </ul>
-    )}
 
       {error && <p className="error-msg">{error}</p>}
 
