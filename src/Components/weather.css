@@ -20,7 +20,7 @@ body {
   background-repeat: no-repeat;
 }
 
-/* ─── Card Container ─────────────────────────────────── */
+/* ─── Card Container  */
 .container {
   /* background: #ffffff; */
   backdrop-filter: blur(11px) saturate(140%);
@@ -35,7 +35,7 @@ body {
   gap: 0;
 }
 
-/* ─── Search Row ─────────────────────────────────────── */
+/* ─── Search Row  */
 .container input {
   width: 100%;
   padding: 12px 18px;
@@ -150,6 +150,55 @@ body {
   margin-bottom: 0;
 }
 
+/* Suggestions List */
+.suggestions-list {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  list-style: none;
+  background: #fff;
+  border: 1.5px solid #ede9fe;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(109, 40, 217, 0.12);
+  margin-top: 8px;
+  animation: fadeUp 0.2s ease both;
+  z-index: 10;
+  width: 100%;
+}
+
+.suggestions-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-bottom: 1px solid #f3f0ff;
+}
+
+.suggestions-list li:last-child {
+  border-bottom: none;
+}
+
+.suggestions-list li:hover {
+  background: #f5f3ff;
+}
+
+.sug-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #3b0764;
+}
+
+.sug-country {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #a78bfa;
+  background: #f5f3ff;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
 .error-msg {
   grid-column: 1 / -1;
   grid-row: 2;
@@ -163,7 +212,6 @@ body {
   width: 100%;
 }
 
-/* ─── Error Message ──────────────────────────────────── */
 .error-msg {
   color: #dc2626;
   background: #fef2f2;
@@ -176,7 +224,6 @@ body {
   width: 100%;
 }
 
-/* ─── Weather Content ────────────────────────────────── */
 .content {
   display: flex;
   flex-direction: column;
@@ -191,7 +238,7 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ─── Weather Image + Description ───────────────────── */
+/* weather img */
 .weather-img {
   display: flex;
   flex-direction: column;
@@ -216,7 +263,7 @@ body {
   border-radius: 20px;
 }
 
-/* ─── Temperature ────────────────────────────────────── */
+/* ─── Temperature  */
 .weather-temp{
   padding: 6px;
 }
@@ -235,7 +282,7 @@ body {
   letter-spacing: 0;
 }
 
-/* ─── City + Location ────────────────────────────────── */
+/* ─── City + Location  */
 .weather-city {
   display: flex;
   align-items: center;
@@ -248,13 +295,11 @@ body {
 
 .weather-location {
   color: #8351d9;
-  box-shadow: ;
   font-size: 1.2rem;
   display: flex;
   align-items: center;
 }
 
-/* ─── Stats Row ──────────────────────────────────────── */
 .weather-stats {
   display: flex;
   gap: 16px;
@@ -279,7 +324,7 @@ body {
   gap: 4px;
 }
 
-/* ─── Wind ───────────────────────────────────────────── */
+/* ─── Wind  */
 .weather-wind {
   font-size: 1.4rem;
   color: #7c3aed;
@@ -302,7 +347,7 @@ body {
   text-transform: uppercase;
 }
 
-/* ─── Humidity ───────────────────────────────────────── */
+/* ─── Humidity  */
 .weathhumidity {
   font-size: 1.6rem;
   color: #7c3aed;
@@ -325,7 +370,7 @@ body {
   text-transform: uppercase;
 }
 
-/* ─── Responsive ─────────────────────────────────────── */
+/* Responsive  */
 @media (max-width: 480px) {
   .container {
     padding: 28px 20px;
