@@ -19,23 +19,34 @@ const Weather = () => {
       fetch(url, {
         method: "GET",
         headers: {
-          "X-RapidAPI-Key": "3743ad9943mshe0a83f22821232bp145273jsn2b6b274228fb", // replace with your GeoDB RapidAPI key
+          "X-RapidAPI-Key": "3743ad9943mshe0a83f22821232bp145273jsn2b6b274228fb", // replace with your key
           "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com",
         },
       })
         .then((res) => res.json())
         .then((data) => {
+          // Filter only cities
           const citiesOnly = data.data.filter((item) => item.type === "CITY");
-          setSuggestions(citiesOnly);
+
+          // Format suggestions for worldwide display: City, Region (if exists), Country
+          const formattedCities = citiesOnly.map((city) => ({
+            id: city.id,
+            name: city.name,
+            country: city.country,
+            region: city.region ? city.region : "",
+            display: `${city.name}${city.region ? ", " + city.region : ""}, ${city.country}`,
+          }));
+
+          setSuggestions(formattedCities);
         })
         .catch((err) => {
           console.error("Error fetching city suggestions", err);
         });
     } else {
-        // Clear suggestions, weather, and error when input is empty or too short
-        setSuggestions([]);
-        setWeather(null);
-        setError("");
+      // Clear suggestions, weather, and error when input is empty or too short
+      setSuggestions([]);
+      setWeather(null);
+      setError("");
     }
   }, [city]);
 
@@ -47,22 +58,22 @@ const Weather = () => {
     setCity(event.target.value);
   }
 
-  // Click on suggestion � fetch weather
+  // Click on suggestion → fetch weather
   function handleSuggestionClick(suggestion) {
-    setCity(`${suggestion.name}, ${suggestion.countryCode}`);
+    setCity(suggestion.display); // show City, Region, Country
     setSuggestions([]);
-    fetchdata(suggestion.name, suggestion.countryCode);
+    fetchdata(suggestion.name, suggestion.country);
   }
 
   // Fetch weather from OpenWeather API
   async function fetchdata(cityName, countryCode) {
-    const apiKey = "df15ecb408ec75e68cf4bb7463f0fcd9";
+    const apiKey = "df15ecb408ec75e68cf4bb7463f0fcd9"; // replace with your OpenWeather key
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName},${countryCode}&appid=${apiKey}&units=metric`;
-  
+
     try {
       let response = await fetch(url);
       let output = await response.json();
-  
+
       if (response.ok) {
         setWeather(output);
         setError("");
@@ -93,8 +104,7 @@ const Weather = () => {
               key={suggestion.id}
               onClick={() => handleSuggestionClick(suggestion)}
             >
-              <span className="sug-name">{suggestion.name}</span>
-              <span className="sug-country">{suggestion.country}</span>
+              {suggestion.display}
             </li>
           ))}
         </ul>
