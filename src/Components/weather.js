@@ -19,34 +19,22 @@ const Weather = () => {
       fetch(url, {
         method: "GET",
         headers: {
-          "X-RapidAPI-Key": "3743ad9943mshe0a83f22821232bp145273jsn2b6b274228fb", // replace with your key
+          "X-RapidAPI-Key": "3743ad9943mshe0a83f22821232bp145273jsn2b6b274228fb",
           "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com",
         },
       })
         .then((res) => res.json())
         .then((data) => {
-          // Filter only cities
           const citiesOnly = data.data.filter((item) => item.type === "CITY");
-
-          // Format suggestions for worldwide display: City, Region (if exists), Country
-          const formattedCities = citiesOnly.map((city) => ({
-            id: city.id,
-            name: city.name,
-            country: city.country,
-            region: city.region ? city.region : "",
-            display: `${city.name}${city.region ? ", " + city.region : ""}, ${city.country}`,
-          }));
-
-          setSuggestions(formattedCities);
+          setSuggestions(citiesOnly);
         })
         .catch((err) => {
           console.error("Error fetching city suggestions", err);
         });
     } else {
-      // Clear suggestions, weather, and error when input is empty or too short
-      setSuggestions([]);
-      setWeather(null);
-      setError("");
+        setSuggestions([]);
+        setWeather(null);
+        setError("");
     }
   }, [city]);
 
@@ -58,22 +46,24 @@ const Weather = () => {
     setCity(event.target.value);
   }
 
-  // Click on suggestion → fetch weather
+  // Click on suggestion – passing coordinates for 100% accuracy
   function handleSuggestionClick(suggestion) {
-    setCity(suggestion.display); // show City, Region, Country
+    setCity(`${suggestion.name}, ${suggestion.countryCode}`);
     setSuggestions([]);
-    fetchdata(suggestion.name, suggestion.country);
+    // Use latitude and longitude to avoid naming confusion
+    fetchdata(suggestion.latitude, suggestion.longitude);
   }
 
-  // Fetch weather from OpenWeather API
-  async function fetchdata(cityName, countryCode) {
-    const apiKey = "df15ecb408ec75e68cf4bb7463f0fcd9"; // replace with your OpenWeather key
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName},${countryCode}&appid=${apiKey}&units=metric`;
-
+  // Fetch weather from OpenWeather API using Coordinates
+  async function fetchdata(lat, lon) {
+    const apiKey = "df15ecb408ec75e68cf4bb7463f0fcd9";
+    // Fixed URL using lat/lon instead of city name
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+  
     try {
       let response = await fetch(url);
       let output = await response.json();
-
+  
       if (response.ok) {
         setWeather(output);
         setError("");
@@ -89,12 +79,26 @@ const Weather = () => {
 
   return (
     <div className="container">
-      <input
-        placeholder="Enter city name"
-        type="text"
-        value={city}
-        onChange={cityChange}
-      />
+      <div className="search-box">
+        <input
+          placeholder="Enter city name"
+          type="text"
+          value={city}
+          onChange={cityChange}
+        />
+
+        <button
+          className="city"
+          onClick={() => {
+            if (suggestions.length > 0) {
+              // Automatically picks the most relevant suggestion's coordinates
+              handleSuggestionClick(suggestions[0]);
+            }
+          }}
+        >
+          <IoMdSearch />
+        </button>
+      </div>
 
       {/* Suggestions list */}
       {suggestions.length > 0 && (
@@ -104,23 +108,12 @@ const Weather = () => {
               key={suggestion.id}
               onClick={() => handleSuggestionClick(suggestion)}
             >
-              {suggestion.display}
+              <span className="sug-name">{suggestion.name}</span>
+              <span className="sug-country">{suggestion.countryCode}</span>
             </li>
           ))}
         </ul>
       )}
-
-      <button
-        className="city"
-        onClick={() => {
-          if (suggestions.length > 0) {
-            // Take the first suggestion if user clicks search without selecting
-            handleSuggestionClick(suggestions[0]);
-          }
-        }}
-      >
-        <IoMdSearch />
-      </button>
 
       {error && <p className="error-msg">{error}</p>}
 
@@ -136,7 +129,7 @@ const Weather = () => {
 
           <div className="weather-temp">
             <h3>
-              {weather.main.temp}
+              {Math.round(weather.main.temp)}
               <span>&deg;C</span>
             </h3>
           </div>
@@ -155,7 +148,7 @@ const Weather = () => {
               <div className="weather-wind">
                 <FaWind />
               </div>
-              <div className="wind-speed">{weather.wind.speed}</div>
+              <div className="wind-speed">{weather.wind.speed} m/s</div>
               <div className="wind-head">WIND SPEED</div>
             </div>
 
@@ -163,7 +156,7 @@ const Weather = () => {
               <div className="weathhumidity">
                 <WiHumidity />
               </div>
-              <div className="humidity-speed">{weather.main.humidity}</div>
+              <div className="humidity-speed">{weather.main.humidity}%</div>
               <div className="humidity-head">HUMIDITY</div>
             </div>
           </div>
