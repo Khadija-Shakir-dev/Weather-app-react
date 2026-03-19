@@ -25,39 +25,36 @@ const Weather = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          const citiesOnly = data.data.filter((item) => item.type === "CITY");
-          setSuggestions(citiesOnly);
+          if(data.data) {
+            const citiesOnly = data.data.filter((item) => item.type === "CITY");
+            setSuggestions(citiesOnly);
+          }
         })
         .catch((err) => {
           console.error("Error fetching city suggestions", err);
         });
     } else {
         setSuggestions([]);
-        setWeather(null);
-        setError("");
+        // Don't clear weather here so the UI doesn't jump while typing
     }
   }, [city]);
 
-  // Set page title
   document.title = "React Weather App";
 
-  // Input change
   function cityChange(event) {
     setCity(event.target.value);
   }
 
-  // Click on suggestion – passing coordinates for 100% accuracy
+  // FIX: Passing coordinates to ensure it hits the right "Los Angeles"
   function handleSuggestionClick(suggestion) {
     setCity(`${suggestion.name}, ${suggestion.countryCode}`);
     setSuggestions([]);
-    // Use latitude and longitude to avoid naming confusion
     fetchdata(suggestion.latitude, suggestion.longitude);
   }
 
-  // Fetch weather from OpenWeather API using Coordinates
+  // FIX: Using lat/lon for 100% accuracy
   async function fetchdata(lat, lon) {
     const apiKey = "df15ecb408ec75e68cf4bb7463f0fcd9";
-    // Fixed URL using lat/lon instead of city name
     const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
   
     try {
@@ -68,37 +65,24 @@ const Weather = () => {
         setWeather(output);
         setError("");
       } else {
-        setError("No Data Found, Please Enter A Valid City Name");
+        setError("No Data Found");
         setWeather(null);
       }
     } catch (err) {
-      setError("Network error! Check your connection.");
+      setError("Network error!");
       setWeather(null);
     }
   }
 
   return (
     <div className="container">
-      <div className="search-box">
-        <input
-          placeholder="Enter city name"
-          type="text"
-          value={city}
-          onChange={cityChange}
-        />
-
-        <button
-          className="city"
-          onClick={() => {
-            if (suggestions.length > 0) {
-              // Automatically picks the most relevant suggestion's coordinates
-              handleSuggestionClick(suggestions[0]);
-            }
-          }}
-        >
-          <IoMdSearch />
-        </button>
-      </div>
+      {/* Back to your original structure - no extra wrappers */}
+      <input
+        placeholder="Enter city name"
+        type="text"
+        value={city}
+        onChange={cityChange}
+      />
 
       {/* Suggestions list */}
       {suggestions.length > 0 && (
@@ -114,6 +98,17 @@ const Weather = () => {
           ))}
         </ul>
       )}
+
+      <button
+        className="city"
+        onClick={() => {
+          if (suggestions.length > 0) {
+            handleSuggestionClick(suggestions[0]);
+          }
+        }}
+      >
+        <IoMdSearch />
+      </button>
 
       {error && <p className="error-msg">{error}</p>}
 
